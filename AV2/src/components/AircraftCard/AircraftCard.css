@@ -70,3 +70,8 @@
     background-color: #007bff;
     color: white;
 }
+
+.aircraft-card-link {
+    text-decoration: none;
+    color: inherit;
+}

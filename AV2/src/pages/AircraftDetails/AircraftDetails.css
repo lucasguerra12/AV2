@@ -1,0 +1,67 @@
+.details-layout {
+    display: flex;
+    background-color: #f8f9fa;
+}
+
+.main-content { /* Reutilizando do Dashboard.css, mas pode ter estilos específicos */
+    margin-left: 250px;
+    flex-grow: 1;
+    padding: 30px;
+    height: 100vh;
+}
+
+.details-header {
+    display: flex;
+    align-items: baseline;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.details-header h1 {
+    margin: 0;
+    font-size: 32px;
+    color: #343a40;
+}
+
+.aircraft-code {
+    font-size: 18px;
+    color: #888;
+}
+
+.details-card {
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+}
+
+.details-tabs {
+    display: flex;
+    gap: 10px;
+    border-bottom: 2px solid #dee2e6;
+    margin-bottom: 20px;
+}
+
+.tab {
+    padding: 10px 20px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 16px;
+    position: relative;
+    top: 2px; /* Alinha com a borda inferior */
+}
+
+.tab.active {
+    font-weight: bold;
+    color: #007bff;
+    border-bottom: 2px solid #007bff;
+}
+
+.tab-content {
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}

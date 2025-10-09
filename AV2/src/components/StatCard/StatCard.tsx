@@ -1,8 +1,7 @@
-// src/components/StatCard/StatCard.tsx
 import React from 'react';
 import './StatCard.css';
 
-// O tipo React.ReactNode é mais genérico e ideal para ícones
+// A propriedade 'icon' deve ser do tipo React.ReactNode
 interface StatCardProps {
     icon: React.ReactNode; 
     label: string;
@@ -11,6 +10,7 @@ interface StatCardProps {
 }
 
 const StatCard = ({ icon, label, value, color }: StatCardProps) => {
+    // ... o resto do componente
     return (
         <div className="stat-card">
             <div className="stat-icon" style={{ backgroundColor: color }}>

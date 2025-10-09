@@ -1,4 +1,3 @@
-// src/pages/Dashboard/Dashboard.tsx
 import React from 'react';
 import './Dashboard.css';
 import Sidebar from '../../components/Sidebar/Sidebar';
@@ -6,7 +5,7 @@ import { mockAeronaves } from '../../data/mockData';
 import AircraftCard from '../../components/AircraftCard/AircraftCard';
 import StatCard from '../../components/StatCard/StatCard';
 
-// Importando os ícones da biblioteca Font Awesome (fa)
+// A importação deve vir de 'react-icons/fa'
 import { FaPlane, FaTools, FaCheckCircle } from 'react-icons/fa';
 
 const Dashboard = () => {

@@ -1,30 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react'; // 1. Importe o Suspense
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login/Login';
-import Dashboard from './pages/Dashboard/Dashboard';
+// import Dashboard from './pages/Dashboard/Dashboard'; // -> Vamos remover a importação direta
+// import AircraftDetails from './pages/AircraftDetails/AircraftDetails'; // -> E esta também
+
+// 2. Importe os componentes de forma "preguiçosa" (lazy)
+const Dashboard = React.lazy(() => import('./pages/Dashboard/Dashboard'));
+const AircraftDetails = React.lazy(() => import('./pages/AircraftDetails/AircraftDetails'));
 
 function App() {
-  // 1. Criamos um estado para saber se o utilizador está logado
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // 2. Criamos uma função para "fazer o login"
   const handleLogin = () => {
-    // Aqui, no futuro, você validaria o email e a senha
     setIsAuthenticated(true);
   };
 
   return (
     <Router>
-      <Routes>
-        <Route path="/login" element={
-          !isAuthenticated ? <Login onLogin={handleLogin} /> : <Navigate to="/dashboard" />
-        } />
-        <Route path="/dashboard" element={
-          isAuthenticated ? <Dashboard /> : <Navigate to="/login" />
-        } />
-        {/* Rota inicial: se estiver logado, vai para o dashboard, senão, para o login */}
-        <Route path="/" element={<Navigate to="/dashboard" />} />
-      </Routes>
+      {/* 3. Envolva as suas rotas com o componente Suspense */}
+      <Suspense fallback={<div>A carregar...</div>}>
+        <Routes>
+          <Route path="/login" element={
+            !isAuthenticated ? <Login onLogin={handleLogin} /> : <Navigate to="/dashboard" />
+          } />
+          <Route path="/dashboard" element={
+            isAuthenticated ? <Dashboard /> : <Navigate to="/login" />
+          } />
+          <Route path="/aeronave/:codigo" element={
+            isAuthenticated ? <AircraftDetails /> : <Navigate to="/login" />
+          } />
+          <Route path="/" element={<Navigate to="/dashboard" />} />
+        </Routes>
+      </Suspense>
     </Router>
   );
 }
