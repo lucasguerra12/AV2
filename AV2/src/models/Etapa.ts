@@ -1,5 +1,5 @@
-import { StatusEtapa } from "./enums.js";
-import { Funcionario } from "./Funcionario.js";
+import { StatusEtapa } from "./enums";
+import { Funcionario } from "./Funcionario";
 
 export class Etapa {
     nome: string;

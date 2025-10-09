@@ -1,4 +1,4 @@
-import { Aeronave } from "./Aeronave.js";
+import { Aeronave } from "./Aeronave";
 import * as fs from 'fs';
 export class Relatorio {
     private gerarConteudo(aeronave: Aeronave, nomeCliente: string): string {
