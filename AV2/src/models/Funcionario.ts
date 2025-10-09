@@ -1,4 +1,3 @@
-
 import { NivelPermissao } from "./enums";
 
 export class Funcionario {

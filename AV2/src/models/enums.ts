@@ -13,7 +13,7 @@ export enum StatusPeca {
 }
 export enum StatusEtapa {
     PENDENTE = "Pendente",
-    ANDAMENTO = "Em Andamento",
+    EM_ANDAMENTO = "Em Andamento",
     CONCLUIDA = "Concluída"
 }
 export enum NivelPermissao {

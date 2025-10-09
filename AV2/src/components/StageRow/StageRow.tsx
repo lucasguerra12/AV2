@@ -12,7 +12,7 @@ const getStatusInfo = (status: StatusEtapa) => {
     switch (status) {
         case StatusEtapa.CONCLUIDA:
             return { icon: <FaCheckCircle />, text: 'Concluída', color: '#4caf50' };
-        case StatusEtapa.EM_ANDAMENTO:
+        case StatusEtapa.ANDAMENTO:
             return { icon: <FaCog />, text: 'Em Andamento', color: '#ff9800' };
         case StatusEtapa.PENDENTE:
         default:
@@ -30,7 +30,7 @@ const StageRow = ({ etapa }: StageRowProps) => {
                 Prazo: {etapa.prazo.toLocaleDateString()}
             </div>
             <div className="stage-responsible">
-                Responsável: {etapa.funcionario?.nome || 'N/D'}
+                Responsável: {etapa.funcionarios?.map(func => func.nome).join(', ') || 'N/D'}
             </div>
             <div className="stage-status" style={{ color: statusInfo.color }}>
                 {statusInfo.icon}
