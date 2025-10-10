@@ -7,11 +7,23 @@ import { FaTrash } from 'react-icons/fa';
 interface FuncionarioRowProps {
     funcionario: Funcionario;
     onRemove: (idFuncionario: number) => void;
+    currentUser: Funcionario | null;
 }
 
-const getPermissaoClass = (nivel: NivelPermissao) => { /* ...código inalterado... */ };
+const getPermissaoClass = (nivel: NivelPermissao) => {
+    switch (nivel) {
+        case NivelPermissao.ADMINISTRADOR:
+            return 'permissao-admin';
+        case NivelPermissao.ENGENHEIRO:
+            return 'permissao-engenheiro';
+        case NivelPermissao.OPERADOR:
+            return 'permissao-operador';
+        default:
+            return '';
+    }
+};
 
-const FuncionarioRow = ({ funcionario, onRemove }: FuncionarioRowProps) => {
+const FuncionarioRow = ({ funcionario, onRemove, currentUser }: FuncionarioRowProps) => {
     const permissaoClassName = getPermissaoClass(funcionario.nivelPermissao);
 
     return (
@@ -21,11 +33,18 @@ const FuncionarioRow = ({ funcionario, onRemove }: FuncionarioRowProps) => {
             <div className="funcionario-info permissao">
                 <span className={`permissao-pill ${permissaoClassName}`}>{funcionario.nivelPermissao}</span>
             </div>
-            {/* Adicionando botão de remover */}
+            
             <div className="funcionario-actions">
-                <button className="action-button remove" onClick={() => onRemove(funcionario.id)} title="Remover">
-                    <FaTrash />
-                </button>
+                {}
+                {currentUser && currentUser.nivelPermissao === NivelPermissao.ADMINISTRADOR && (
+                    <button 
+                        className="action-button remove" 
+                        onClick={() => onRemove(funcionario.id)} 
+                        title="Remover"
+                    >
+                        <FaTrash />
+                    </button>
+                )}
             </div>
         </div>
     );

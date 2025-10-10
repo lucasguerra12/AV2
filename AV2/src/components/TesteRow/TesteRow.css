@@ -1,6 +1,6 @@
-.peca-row {
+.teste-row {
     display: grid;
-    grid-template-columns: 3fr 2fr 3fr 2fr 1fr;
+    grid-template-columns: 3fr 2fr 1fr;
     align-items: center;
     gap: 20px;
     padding: 15px 20px;
@@ -11,11 +11,15 @@
     font-size: 14px;
 }
 
-.peca-info { color: #343a40; }
-.peca-info.nome { font-weight: bold; }
-.peca-info.fornecedor { color: #6c757d; }
+.teste-info {
+    color: #343a40;
+}
 
-.status-pill {
+.teste-info.tipo {
+    font-weight: bold;
+}
+
+.resultado-pill {
     color: white;
     padding: 5px 12px;
     border-radius: 15px;
@@ -25,11 +29,15 @@
     display: inline-block;
 }
 
-.status-pronta { background-color: #4caf50; }
-.status-transporte { background-color: #2196f3; }
-.status-producao { background-color: #ff9800; }
+.resultado-aprovado {
+    background-color: #4caf50; 
+}
 
-.peca-actions {
+.resultado-reprovado {
+    background-color: #dc3545; 
+}
+
+.teste-actions {
     display: flex;
     justify-content: flex-end;
     gap: 8px;
@@ -47,7 +55,10 @@
     transition: all 0.2s;
 }
 
-.action-button:hover { background-color: #f1f3f5; }
-.action-button.transport { color: #2196f3; }
-.action-button.ready { color: #4caf50; }
-.action-button.remove { color: #dc3545; }
+.action-button:hover {
+    background-color: #f1f3f5;
+}
+
+.action-button.remove { 
+    color: #dc3545; 
+}

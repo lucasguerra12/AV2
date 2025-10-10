@@ -8,6 +8,7 @@ interface TesteRowProps {
     teste: Teste;
     index: number;
     onRemove: (index: number) => void;
+    canManage: boolean;
 }
 
 const getResultadoInfo = (resultado: ResultadoTeste) => {
@@ -20,7 +21,8 @@ const getResultadoInfo = (resultado: ResultadoTeste) => {
     }
 };
 
-const TesteRow = ({ teste, index, onRemove }: TesteRowProps) => {
+
+const TesteRow = ({ teste, index, onRemove, canManage }: TesteRowProps) => {
     const resultadoInfo = getResultadoInfo(teste.resultado);
 
     return (
@@ -32,13 +34,15 @@ const TesteRow = ({ teste, index, onRemove }: TesteRowProps) => {
                 </span>
             </div>
             <div className="teste-actions">
-                <button 
-                    className="action-button remove"
-                    onClick={() => onRemove(index)}
-                    title="Remover Teste"
-                >
-                    <FaTrash />
-                </button>
+                {canManage && (
+                    <button 
+                        className="action-button remove"
+                        onClick={() => onRemove(index)}
+                        title="Remover Teste"
+                    >
+                        <FaTrash />
+                    </button>
+                )}
             </div>
         </div>
     );

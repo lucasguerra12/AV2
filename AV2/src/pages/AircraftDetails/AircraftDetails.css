@@ -3,7 +3,7 @@
     background-color: #f8f9fa;
 }
 
-.main-content { /* Reutilizando do Dashboard.css, mas pode ter estilos específicos */
+.main-content {
     margin-left: 250px;
     flex-grow: 1;
     padding: 30px;
@@ -50,7 +50,7 @@
     cursor: pointer;
     font-size: 16px;
     position: relative;
-    top: 2px; /* Alinha com a borda inferior */
+    top: 2px;
 }
 
 .tab.active {
@@ -102,8 +102,8 @@
     gap: 15px;
     align-items: center;
 }
-
-.add-form input {
+.add-form input,
+.add-form select {
     flex-grow: 1;
     padding: 10px;
     border: 1px solid #ced4da;
@@ -111,9 +111,12 @@
     font-size: 14px;
     background-color: #fff;
     color: #333;
+    box-sizing: border-box; 
 }
 
-.add-button-small {
+.add-form .add-button-small {
+    flex-grow: 0;
+    flex-shrink: 0;
     padding: 10px 20px;
     background-color: #007bff;
     color: white;
@@ -122,8 +125,29 @@
     cursor: pointer;
     font-weight: 500;
     transition: background-color 0.2s;
+    height: 40px;
 }
 
 .add-button-small:hover {
     background-color: #0056b3;
+}
+
+.download-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 16px;
+    transition: background-color 0.2s;
+}
+
+.download-button:hover {
+    background-color: #138496;
 }

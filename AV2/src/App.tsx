@@ -5,6 +5,7 @@ import Login from './pages/Login/Login';
 import { mockAeronaves, mockFuncionarios } from './data/mockData';
 import { Aeronave } from './models/Aeronave';
 import { Funcionario } from './models/Funcionario';
+import { NivelPermissao } from './models/enums';
 
 const Dashboard = React.lazy(() => import('./pages/Dashboard/Dashboard'));
 const AircraftDetails = React.lazy(() => import('./pages/AircraftDetails/AircraftDetails'));
@@ -12,22 +13,35 @@ const Funcionarios = React.lazy(() => import('./pages/Funcionarios/Funcionarios'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState<Funcionario | null>(null);
 
-  // 1. O estado da aplicação agora vive aqui!
   const [aeronaves, setAeronaves] = useState<Aeronave[]>(mockAeronaves);
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>(mockFuncionarios);
 
-  const handleLogin = () => {
-    setIsAuthenticated(true);
+  const handleLogin = (email: string) => {
+    const user = mockFuncionarios.find(f => f.email === email);
+    
+    if (user) {
+      setCurrentUser(user);
+      setIsAuthenticated(true);
+    } else {
+      alert("Utilizador não encontrado! Tente 'admin@aerocode.com', 'engenheiro@aerocode.com' ou 'operador@aerocode.com'.");
+    }
   };
 
-  // 2. Funções de gestão que serão passadas para as páginas
   const handleAdicionarAeronave = (novaAeronave: Aeronave) => {
     setAeronaves(estadoAnterior => [...estadoAnterior, novaAeronave]);
   };
 
+  const handleUpdateAeronave = (aeronaveAtualizada: Aeronave) => {
+    setAeronaves(estadoAnterior => 
+      estadoAnterior.map(a => 
+        a.codigo === aeronaveAtualizada.codigo ? aeronaveAtualizada : a
+      )
+    );
+  };
+
   const handleAdicionarFuncionario = (novoFuncionario: Funcionario) => {
-    // Adiciona o novo funcionário garantindo um id único
     const novoId = Math.max(...funcionarios.map(f => f.id), 0) + 1;
     novoFuncionario.id = novoId;
     setFuncionarios(estadoAnterior => [...estadoAnterior, novoFuncionario]);
@@ -43,10 +57,20 @@ function App() {
         <Routes>
           <Route path="/login" element={!isAuthenticated ? <Login onLogin={handleLogin} /> : <Navigate to="/dashboard" />} />
           
-          {/* 3. Passamos os dados e as funções como props para as rotas */}
-          <Route path="/dashboard" element={isAuthenticated ? <Dashboard aeronaves={aeronaves} onAdicionarAeronave={handleAdicionarAeronave} /> : <Navigate to="/login" />} />
-          <Route path="/aeronave/:codigo" element={isAuthenticated ? <AircraftDetails aeronavesIniciais={aeronaves} /> : <Navigate to="/login" />} />
-          <Route path="/funcionarios" element={isAuthenticated ? <Funcionarios funcionarios={funcionarios} onAdicionarFuncionario={handleAdicionarFuncionario} onRemoverFuncionario={handleRemoverFuncionario} /> : <Navigate to="/login" />} />
+          <Route 
+            path="/dashboard" 
+            element={isAuthenticated ? <Dashboard currentUser={currentUser} aeronaves={aeronaves} onAdicionarAeronave={handleAdicionarAeronave} /> : <Navigate to="/login" />} 
+          />
+          
+          <Route 
+            path="/aeronave/:codigo" 
+            element={isAuthenticated ? <AircraftDetails currentUser={currentUser} aeronavesIniciais={aeronaves} onUpdateAeronave={handleUpdateAeronave} todosFuncionarios={funcionarios} /> : <Navigate to="/login" />} 
+          />
+          
+          <Route 
+            path="/funcionarios" 
+            element={isAuthenticated ? <Funcionarios currentUser={currentUser} funcionarios={funcionarios} onAdicionarFuncionario={handleAdicionarFuncionario} onRemoverFuncionario={handleRemoverFuncionario} /> : <Navigate to="/login" />} 
+          />
           
           <Route path="/" element={<Navigate to="/dashboard" />} />
         </Routes>

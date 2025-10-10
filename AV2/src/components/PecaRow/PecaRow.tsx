@@ -8,6 +8,7 @@ interface PecaRowProps {
     peca: Peca;
     onUpdateStatus: (peca: Peca, novoStatus: StatusPeca) => void;
     onRemove: (nomePeca: string) => void;
+    canManage: boolean;
 }
 
 const getStatusClass = (status: StatusPeca) => {
@@ -22,7 +23,8 @@ const getStatusClass = (status: StatusPeca) => {
     }
 };
 
-const PecaRow = ({ peca, onUpdateStatus, onRemove }: PecaRowProps) => {
+
+const PecaRow = ({ peca, onUpdateStatus, onRemove, canManage }: PecaRowProps) => {
     const statusClassName = getStatusClass(peca.status);
 
     return (
@@ -54,13 +56,15 @@ const PecaRow = ({ peca, onUpdateStatus, onRemove }: PecaRowProps) => {
                         <FaCheck />
                     </button>
                 )}
-                <button 
-                    className="action-button remove"
-                    onClick={() => onRemove(peca.nome)}
-                    title="Remover Peça"
-                >
-                    <FaTrash />
-                </button>
+                {canManage && (
+                    <button 
+                        className="action-button remove"
+                        onClick={() => onRemove(peca.nome)}
+                        title="Remover Peça"
+                    >
+                        <FaTrash />
+                    </button>
+                )}
             </div>
         </div>
     );
