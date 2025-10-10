@@ -151,3 +151,20 @@
 .download-button:hover {
     background-color: #138496;
 }
+
+@media (max-width: 992px) {
+    .main-content {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .details-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .details-tabs {
+        overflow-x: auto; 
+    }
+}

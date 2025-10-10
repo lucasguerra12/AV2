@@ -82,3 +82,18 @@
 .login-button:hover {
     background-color: #2E3A59;
 }
+
+/* ✅ MEDIA QUERY PARA RESPONSIVIDADE */
+@media (max-width: 768px) {
+    .login-image-side {
+        display: none; /* Esconde a imagem em telas menores */
+    }
+
+    .login-form-side {
+        width: 100%; /* Faz o formulário ocupar a tela inteira */
+    }
+
+    .login-card {
+        box-shadow: none; /* Remove a sombra no modo de tela cheia */
+    }
+}

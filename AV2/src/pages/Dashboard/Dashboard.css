@@ -1,3 +1,4 @@
+
 .dashboard-layout {
     display: flex;
     background-color: #f8f9fa; 
@@ -9,7 +10,9 @@
     padding: 30px;
     height: 100vh;
     overflow-y: auto;
+    transition: margin-left 0.3s ease-in-out;
 }
+
 
 .header {
     display: flex;
@@ -66,7 +69,7 @@
     border-radius: 5px;
     font-size: 14px;
     width: 100%;
-    box-sizing: border-box; 
+    box-sizing: border-box;
 }
 
 .aircraft-form .add-button-small {
@@ -78,9 +81,20 @@
     cursor: pointer;
     font-weight: 500;
     transition: background-color 0.2s;
-    height: 40px; 
+    height: 40px;
 }
 
 .aircraft-form .add-button-small:hover {
     background-color: #0056b3;
+}
+
+@media (max-width: 992px) {
+    .main-content {
+        margin-left: 0; 
+    }
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
 }

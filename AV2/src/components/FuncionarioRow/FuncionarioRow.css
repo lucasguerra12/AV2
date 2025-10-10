@@ -29,14 +29,20 @@
     display: inline-block;
 }
 
-.permissao-admin {
-    background-color: #dc3545; 
-}
+.permissao-admin { background-color: #dc3545; }
+.permissao-engenheiro { background-color: #007bff; }
+.permissao-operador { background-color: #6c757d; }
 
-.permissao-engenheiro {
-    background-color: #007bff; 
-}
+@media (max-width: 768px) {
+    .funcionario-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
 
-.permissao-operador {
-    background-color: #6c757d; 
+    .funcionario-actions {
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
+
+    .funcionario-info.email::before { content: 'Email: '; font-weight: bold; color: #343a40; }
 }

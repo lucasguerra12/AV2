@@ -11,17 +11,9 @@
     font-size: 14px;
 }
 
-.peca-info {
-    color: #343a40;
-}
-
-.peca-info.nome {
-    font-weight: bold;
-}
-
-.peca-info.fornecedor {
-    color: #6c757d;
-}
+.peca-info { color: #343a40; }
+.peca-info.nome { font-weight: bold; }
+.peca-info.fornecedor { color: #6c757d; }
 
 .status-pill {
     color: white;
@@ -33,40 +25,32 @@
     display: inline-block;
 }
 
-.status-pronta {
-    background-color: #4caf50; 
-}
+.status-pronta { background-color: #4caf50; }
+.status-transporte { background-color: #2196f3; }
+.status-producao { background-color: #ff9800; }
 
-.status-transporte {
-    background-color: #2196f3; 
-}
-
-.status-producao {
-    background-color: #ff9800; 
-}
-
-.peca-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-}
-
-.action-button {
-    background: none;
-    border: 1px solid transparent;
-    cursor: pointer;
-    padding: 6px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-}
-
-.action-button:hover {
-    background-color: #f1f3f5;
-}
-
+.peca-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.action-button { background: none; border: 1px solid transparent; cursor: pointer; padding: 6px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.action-button:hover { background-color: #f1f3f5; }
 .action-button.transport { color: #2196f3; }
 .action-button.ready { color: #4caf50; }
 .action-button.remove { color: #dc3545; }
+
+/* ✅ MEDIA QUERY PARA LAYOUT DE CARTÃO */
+@media (max-width: 768px) {
+    .peca-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 15px;
+    }
+
+    .peca-actions {
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
+
+    /* Adiciona etiquetas para clareza */
+    .peca-info.tipo::before { content: 'Tipo: '; font-weight: bold; color: #343a40; }
+    .peca-info.fornecedor::before { content: 'Fornecedor: '; font-weight: bold; color: #343a40; }
+    .peca-info.status::before { content: 'Status: '; font-weight: bold; color: #343a40; }
+}
