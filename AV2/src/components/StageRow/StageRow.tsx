@@ -1,13 +1,16 @@
 import React from 'react';
 import './StageRow.css';
 import { Etapa } from '../../models/Etapa';
-import { FaCheckCircle, FaCog, FaClock } from 'react-icons/fa'; 
+import { FaCheckCircle, FaCog, FaClock, FaTrash } from 'react-icons/fa';
 import { StatusEtapa } from '../../models/enums';
 
 interface StageRowProps {
     etapa: Etapa;
+    onUpdateStatus: (etapa: Etapa, acao: 'iniciar' | 'finalizar') => void;
+    onRemove: (nomeEtapa: string) => void;
 }
 
+// 1. FUNÇÃO getStatusInfo COMPLETA
 const getStatusInfo = (status: StatusEtapa) => {
     switch (status) {
         case StatusEtapa.CONCLUIDA:
@@ -20,7 +23,7 @@ const getStatusInfo = (status: StatusEtapa) => {
     }
 };
 
-const StageRow = ({ etapa }: StageRowProps) => {
+const StageRow = ({ etapa, onUpdateStatus, onRemove }: StageRowProps) => {
     const statusInfo = getStatusInfo(etapa.status);
 
     return (
@@ -36,8 +39,31 @@ const StageRow = ({ etapa }: StageRowProps) => {
                 {statusInfo.icon}
                 <span>{statusInfo.text}</span>
             </div>
+            
             <div className="stage-actions">
-                <button className="manage-button">Gerir</button>
+                {etapa.status === StatusEtapa.PENDENTE && (
+                    <button 
+                        className="manage-button start"
+                        onClick={() => onUpdateStatus(etapa, 'iniciar')}
+                    >
+                        Iniciar Etapa
+                    </button>
+                )}
+                {etapa.status === StatusEtapa.EM_ANDAMENTO && (
+                    <button 
+                        className="manage-button finish"
+                        onClick={() => onUpdateStatus(etapa, 'finalizar')}
+                    >
+                        Finalizar Etapa
+                    </button>
+                )}
+                
+                <button 
+                    className="manage-button remove"
+                    onClick={() => onRemove(etapa.nome)}
+                >
+                    <FaTrash />
+                </button>
             </div>
         </div>
     );

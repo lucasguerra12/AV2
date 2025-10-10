@@ -1,15 +1,14 @@
-/* Remova ou substitua todo o CSS anterior por este */
 .dashboard-layout {
     display: flex;
-    background-color: #f8f9fa; /* Um cinza bem mais claro para o fundo */
+    background-color: #f8f9fa; 
 }
 
 .main-content {
-    margin-left: 250px; /* Mesma largura do Sidebar */
+    margin-left: 250px; 
     flex-grow: 1;
     padding: 30px;
     height: 100vh;
-    overflow-y: auto; /* Adiciona scroll se o conteúdo for maior que a tela */
+    overflow-y: auto;
 }
 
 .header {

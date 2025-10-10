@@ -44,3 +44,23 @@
     background-color: #f8f9fa;
     border-color: #adb5bd;
 }
+
+.manage-button.start {
+    border-color: #28a745;
+    color: #28a745;
+}
+
+.manage-button.start:hover {
+    background-color: #28a745;
+    color: white;
+}
+
+.manage-button.finish {
+    border-color: #007bff;
+    color: #007bff;
+}
+
+.manage-button.finish:hover {
+    background-color: #007bff;
+    color: white;
+}
