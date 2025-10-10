@@ -15,7 +15,7 @@ export class Etapa {
 
     iniciarEtapa(): void {
         if (this.status === StatusEtapa.PENDENTE) {
-            this.status = StatusEtapa.ANDAMENTO;
+            this.status = StatusEtapa.EM_ANDAMENTO;
             console.log(`Etapa '${this.nome}' iniciada.`);
         } else {
             console.log(`Aviso: Etapa '${this.nome}' não pôde ser iniciada (Status atual: ${this.status}).`);
@@ -23,7 +23,7 @@ export class Etapa {
     }
 
     finalizarEtapa(): void {
-        if (this.status === StatusEtapa.ANDAMENTO) {
+        if (this.status === StatusEtapa.EM_ANDAMENTO) {
             this.status = StatusEtapa.CONCLUIDA;
             console.log(`Etapa '${this.nome}' foi concluída!`);
         } else {
