@@ -45,7 +45,7 @@ Siga os passos abaixo para instalar e executar a aplicação em ambiente de dese
 
 1.  Clone o repositório para a sua máquina local:
     ```bash
-    git clone <URL_DO_SEU_REPOSITORIO>
+    git clone (https://github.com/lucasguerra12/AV2)
     ```
 
 2.  Navegue até a pasta do projeto:
@@ -101,4 +101,4 @@ src
 ---
 **Autor:**
 
-[SEU NOME AQUI]
+[Lucas Guerra]
