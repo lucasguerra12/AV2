@@ -8,10 +8,22 @@
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 100; 
-    transition: transform 0.3s ease-in-out; 
+    z-index: 200;
+    transition: transform 0.3s ease-in-out;
 }
 
+.menu-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 300;
+    background: none;
+    border: none;
+    color: #e0e1dd;
+    font-size: 1.8rem;
+    cursor: pointer;
+    display: none; 
+}
 .sidebar-header {
     padding: 20px;
     text-align: center;
@@ -33,6 +45,9 @@
     padding: 15px 20px;
     cursor: pointer;
     transition: background-color 0.2s;
+    display: block;
+    text-decoration: none;
+    color: #e0e1dd;
 }
 
 .menu-item:hover {
@@ -49,20 +64,27 @@
     border-top: 1px solid #1b263b;
 }
 
-.sidebar-menu li {
-    list-style-type: none;
-}
-
-.sidebar-menu .menu-item {
-    display: block;
-    color: #e0e1dd;
-    text-decoration: none;
-}
-
-
 @media (max-width: 992px) {
     .sidebar {
-        
         transform: translateX(-100%);
     }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .menu-toggle {
+        display: block;
+    }
 }
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 150;
+}
+
