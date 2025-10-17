@@ -42,7 +42,6 @@ const Funcionarios = ({ currentUser, funcionarios, onAdicionarFuncionario, onRem
                         <form onSubmit={handleSubmit} className="add-form">
                             <input type="text" placeholder="Nome" value={nome} onChange={e => setNome(e.target.value)} required />
                             <input type="email" placeholder="Email (login)" value={email} onChange={e => setEmail(e.target.value)} required />
-                            <input type="password" placeholder="Senha" value={senha} onChange={e => setSenha(e.target.value)} required />
                             <select value={nivel} onChange={e => setNivel(e.target.value as NivelPermissao)}>
                                 <option value={NivelPermissao.OPERADOR}>Operador</option>
                                 <option value={NivelPermissao.ENGENHEIRO}>Engenheiro</option>
