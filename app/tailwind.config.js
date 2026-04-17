@@ -7,19 +7,30 @@ export default {
   theme: {
     extend: {
       colors: {
-        vault: {
-          background: '#0b101e', // Azul quase preto do fundo
-          panel: '#151b2b',      // Cor dos cards
-          border: '#232b3e',     // Linhas divisórias
-          accent: '#3b82f6',     // Azul dos botões primários
-          text: '#94a3b8',       // Texto secundário
-          textHigh: '#f8fafc',   // Texto principal
+        background: "#10131a",
+        surface: {
+          container: "#1d2026",
+          low: "#191c22", // Fundo da Sidebar
+          high: "#272a31",
+          highest: "#32353c", // Cor do hover
         },
-        status: {
-          success: '#10b981', // Verde
-          warning: '#f59e0b', // Laranja
-          critical: '#ef4444' // Vermelho
+        primary: {
+          DEFAULT: "#b7c7eb", // Azul principal dos textos e barra ativa
+          container: "#1b2b48", // Fundo azul escuro do item ativo
+        },
+        on: {
+          background: "#e1e2eb", // Texto branco base
+          surface: "#e1e2eb", // Texto principal
+          surfaceVariant: "#c5c6ce", // Texto secundário (cinza)
+        },
+        outline: {
+          variant: "#44474d", // Linhas e bordas
         }
+      },
+      fontFamily: {
+        headline: ["Space Grotesk", "sans-serif"],
+        body: ["Inter", "sans-serif"],
+        label: ["Inter", "sans-serif"]
       }
     },
   },
