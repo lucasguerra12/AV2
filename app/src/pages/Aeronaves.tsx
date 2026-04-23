@@ -5,8 +5,8 @@ import type { TipoAeronave, Aeronave } from '../domain/types';
 
 export function Aeronaves() {
   const navigate = useNavigate();
-  const { aeronaves, registrarAeronave, atualizarAeronave, removerAeronave } = useSystem();
-  
+  const { aeronaves, registrarAeronave, atualizarAeronave, removerAeronave , usuarioLogado} = useSystem();
+  const isAdmin = usuarioLogado?.nivelPermissao === 'ADMINISTRADOR';  
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
 
@@ -54,9 +54,11 @@ export function Aeronaves() {
       <main className="p-8">
         <div className="flex justify-between items-end mb-10">
           <h1 className="text-4xl font-headline font-bold text-on-surface tracking-tight uppercase">Aeronaves</h1>
-          <button onClick={handleAbrirNovo} className="bg-primary/10 text-primary border border-primary/30 px-6 py-2.5 rounded-sm font-bold text-xs tracking-widest hover:bg-primary hover:text-background transition-all flex items-center gap-2 font-headline uppercase">
-            <span className="material-symbols-outlined text-lg">add</span> Nova Aeronave
-          </button>
+          {isAdmin && (
+            <button onClick={handleAbrirNovo} className="bg-primary/10 text-primary border border-primary/30 px-6 py-2.5 rounded-sm font-bold text-xs tracking-widest hover:bg-primary hover:text-background transition-all flex items-center gap-2 font-headline uppercase">
+              <span className="material-symbols-outlined text-lg">add</span> Nova Aeronave
+            </button>
+          )}
         </div>
 
         <div className="bg-surface-low rounded-sm border border-outline-variant/20 shadow-lg overflow-hidden">
@@ -75,17 +77,21 @@ export function Aeronaves() {
                   <td className="px-6 py-5 text-sm text-on-surface">{aero.modelo}</td>
                   <td className="px-6 py-5 text-right">
                     <div className="flex justify-end gap-3 opacity-40 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => navigate(`/aeronaves/${aero.codigo}`)} className="text-on-surfaceVariant hover:text-primary transition-colors" title="Painel de Controlo">
-                        <span className="material-symbols-outlined text-[20px]">visibility</span>
+                      <button onClick={() => navigate(`/aeronaves/${aero.codigo}`)} className="...">
+                      <span className="material-symbols-outlined text-[20px]">visibility</span>
                       </button>
-                      <button onClick={() => handleAbrirEdicao(aero)} className="text-on-surfaceVariant hover:text-primary transition-colors" title="Editar">
-                        <span className="material-symbols-outlined text-[20px]">edit</span>
-                      </button>
-                      <button onClick={() => { if(confirm(`Remover permanentemente a aeronave ${aero.codigo}?`)) removerAeronave(aero.codigo); }} className="text-on-surfaceVariant hover:text-error transition-colors" title="Excluir">
-                        <span className="material-symbols-outlined text-[20px]">delete</span>
-                      </button>
-                    </div>
-                  </td>
+                      {isAdmin && (
+                      <>
+                        <button onClick={() => handleAbrirEdicao(aero)} className="...">
+                          <span className="material-symbols-outlined text-[20px]">edit</span>
+                        </button>
+                        <button onClick={() => { if(confirm(`Remover?`)) removerAeronave(aero.codigo); }} className="...">
+                          <span className="material-symbols-outlined text-[20px]">delete</span>
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </td>
                 </tr>
               ))}
             </tbody>

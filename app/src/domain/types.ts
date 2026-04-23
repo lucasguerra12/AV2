@@ -10,41 +10,11 @@ export interface Funcionario {
   telefone: string;
   endereco: string;
   usuario: string;
+  senha?: string;
   nivelPermissao: 'ADMINISTRADOR' | 'ENGENHEIRO' | 'OPERADOR';
 }
 
-export interface Teste {
-  id: string;
-  nome: string;
-  tipo: TipoTeste;
-  dataValidade: string;
-  resultado: ResultadoTeste;
-}
-
-export interface Etapa {
-  id: string;
-  nome: string;
-  status: StatusEtapa;
-  prazo: string;
-  funcionariosAlocados: Funcionario[];
-  etapaAnteriorId?: string | null;
-}
-
-export interface Peca {
-  id: string;
-  nome: string;
-  tipo: string;
-  fornecedor: string;
-  status: StatusPeca;
-}
-
-export interface Aeronave {
-  codigo: string;
-  modelo: string;
-  tipo: TipoAeronave;
-  capacidade: number;
-  alcance: number;
-  pecas: Peca[];
-  etapas: Etapa[];
-  testes: Teste[];
-}
+export interface Teste { id: string; nome: string; tipo: TipoTeste; dataValidade: string; resultado: ResultadoTeste; }
+export interface Etapa { id: string; nome: string; status: StatusEtapa; prazo: string; funcionariosAlocados: Funcionario[]; etapaAnteriorId?: string | null; }
+export interface Peca { id: string; nome: string; tipo: string; fornecedor: string; status: StatusPeca; }
+export interface Aeronave { codigo: string; modelo: string; tipo: TipoAeronave; capacidade: number; alcance: number; pecas: Peca[]; etapas: Etapa[]; testes: Teste[]; }
