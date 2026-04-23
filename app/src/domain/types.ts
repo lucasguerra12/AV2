@@ -1,56 +1,45 @@
 export type TipoAeronave = 'COMERCIAL' | 'MILITAR';
-
-export type TipoPeca = 'NACIONAL' | 'IMPORTADA';
-
-export type StatusPeca = 'EM_PRODUCAO' | 'EM_TRANSPORTE' | 'PRONTA';
-
-export type StatusEtapa = 'PENDENTE' | 'ANDAMENTO' | 'CONCLUIDA';
-
-export type NivelPermissao = 'ADMINISTRADOR' | 'ENGENHEIRO' | 'OPERADOR';
-
+export type StatusPeca = 'PRONTA' | 'EM_TRANSPORTE' | 'EM_PRODUCAO' | 'MANUTENCAO';
+export type StatusEtapa = 'PENDENTE' | 'ANDAMENTO' | 'CONCLUIDA' | 'BLOQUEADA';
 export type TipoTeste = 'ELETRICO' | 'HIDRAULICO' | 'AERODINAMICO';
-
-export type ResultadoTeste = 'APROVADO' | 'REPROVADO';
-
-// ==========================================
-// INTERFACES (As Entidades - AV1)
-// ==========================================
+export type ResultadoTeste = 'APROVADO' | 'REPROVADO' | null;
 
 export interface Funcionario {
   id: string;
   nome: string;
   telefone: string;
   endereco: string;
-  usuario: string; 
-  senha?: string; 
-  nivelPermissao: NivelPermissao;
+  usuario: string;
+  nivelPermissao: 'ADMINISTRADOR' | 'ENGENHEIRO' | 'OPERADOR';
 }
 
-export interface Peca {
+export interface Teste {
   id: string;
   nome: string;
-  tipo: TipoPeca;
-  fornecedor: string;
-  status: StatusPeca;
+  tipo: TipoTeste;
+  dataValidade: string;
+  resultado: ResultadoTeste;
 }
 
 export interface Etapa {
   id: string;
   nome: string;
-  prazo: string; 
   status: StatusEtapa;
+  prazo: string;
   funcionariosAlocados: Funcionario[];
-  etapaAnteriorId?: string | null; 
+  etapaAnteriorId?: string | null;
 }
 
-export interface Teste {
+export interface Peca {
   id: string;
-  tipo: TipoTeste;
-  resultado: ResultadoTeste | null; 
+  nome: string;
+  tipo: string;
+  fornecedor: string;
+  status: StatusPeca;
 }
 
 export interface Aeronave {
-  codigo: string; 
+  codigo: string;
   modelo: string;
   tipo: TipoAeronave;
   capacidade: number;
@@ -58,12 +47,4 @@ export interface Aeronave {
   pecas: Peca[];
   etapas: Etapa[];
   testes: Teste[];
-}
-
-export interface Relatorio {
-  id: string;
-  aeronaveCodigo: string;
-  cliente: string;
-  dataEntrega: string;
-  resumoOperacao: string;
 }

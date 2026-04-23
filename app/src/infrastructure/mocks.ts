@@ -12,35 +12,15 @@ export const mockAeronaves: Aeronave[] = [
     tipo: 'COMERCIAL',
     capacidade: 215,
     alcance: 5436,
-    pecas: [
-      { id: 'p1', nome: 'Turbina GE-90', tipo: 'IMPORTADA', fornecedor: 'GE Aviation', status: 'PRONTA' },
-      { id: 'p2', nome: 'Trem de Pouso Principal', tipo: 'NACIONAL', fornecedor: 'AeroTech BR', status: 'EM_TRANSPORTE' },
-      { id: 'p3', nome: 'Painel de Aviônicos', tipo: 'IMPORTADA', fornecedor: 'Lockheed', status: 'EM_TRANSPORTE' },
-      { id: 'p4', nome: 'Fuselagem Lateral', tipo: 'NACIONAL', fornecedor: 'Embraer', status: 'EM_PRODUCAO' },
-    ],
+    pecas: [],
     etapas: [
-      { id: 'e1', nome: 'Montagem da Fuselagem', prazo: '2026-05-10', status: 'CONCLUIDA', funcionariosAlocados: [mockFuncionarios[1]], etapaAnteriorId: null },
-      { id: 'e2', nome: 'Instalação Elétrica', prazo: '2026-05-15', status: 'ANDAMENTO', funcionariosAlocados: [], etapaAnteriorId: 'e1' },
-      { id: 'e3', nome: 'Montagem dos Propulsores', prazo: '2026-05-20', status: 'PENDENTE', funcionariosAlocados: [], etapaAnteriorId: 'e2' },
+      { id: 'e1', nome: 'Montagem da Fuselagem', prazo: '2026-05-10', status: 'CONCLUIDA', funcionariosAlocados: [] },
+      { id: 'e2', nome: 'Instalação Elétrica', prazo: '2026-05-15', status: 'ANDAMENTO', funcionariosAlocados: [] },
+      { id: 'e3', nome: 'Montagem dos Propulsores', prazo: '2026-05-20', status: 'PENDENTE', funcionariosAlocados: [] },
     ],
     testes: [
-      { id: 't1', tipo: 'ELETRICO', resultado: 'APROVADO' },
-      { id: 't2', tipo: 'HIDRAULICO', resultado: 'APROVADO' },
-      { id: 't3', tipo: 'AERODINAMICO', resultado: null }, 
-    ]
-  },
-  {
-    codigo: 'AC-402',
-    modelo: 'Stratosphere X',
-    tipo: 'MILITAR',
-    capacidade: 2,
-    alcance: 12000,
-    pecas: [
-      { id: 'p5', nome: 'Radar Stealth', tipo: 'IMPORTADA', fornecedor: 'Northrop', status: 'EM_TRANSPORTE' }
-    ],
-    etapas: [],
-    testes: [
-      { id: 't4', tipo: 'AERODINAMICO', resultado: 'REPROVADO' } 
+      { id: 't1', nome: 'Inspeção de Cabeamento', tipo: 'ELETRICO', dataValidade: '2026-12-01', resultado: 'APROVADO' },
+      { id: 't2', nome: 'Pressão Estática', tipo: 'AERODINAMICO', dataValidade: '2026-11-15', resultado: null },
     ]
   }
 ];
