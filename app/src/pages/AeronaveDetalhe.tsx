@@ -8,19 +8,19 @@ export function AeronaveDetalhe() {
   const navigate = useNavigate();
   const { 
     aeronaves, inventario, vincularPeca, desvincularPeca, 
-    atualizarStatusEtapa, atualizarResultadoTeste, adicionarEtapa, adicionarTeste 
+    atualizarStatusEtapa, atualizarResultadoTeste, adicionarEtapa, adicionarTeste,
+    removerEtapa, removerTeste
   } = useSystem();
 
   const [isEtapaModalOpen, setIsEtapaModalOpen] = useState(false);
+  const [isTesteModalOpen, setIsTesteModalOpen] = useState(false);
+  const [isVincularModalOpen, setIsVincularModalOpen] = useState(false);
+
   const [novaEtapaNome, setNovaEtapaNome] = useState('');
   const [novaEtapaPrazo, setNovaEtapaPrazo] = useState('');
-
-  const [isTesteModalOpen, setIsTesteModalOpen] = useState(false);
   const [novoTesteNome, setNovoTesteNome] = useState('');
   const [novoTesteData, setNovoTesteData] = useState('');
   const [novoTesteTipo, setNovoTesteTipo] = useState<TipoTeste>('ELETRICO');
-
-  const [isVincularModalOpen, setIsVincularModalOpen] = useState(false);
   const [pecaSelecionada, setPecaSelecionada] = useState('');
 
   const aeronave = aeronaves.find(a => a.codigo === id);
@@ -90,17 +90,23 @@ export function AeronaveDetalhe() {
               const statusReal = (bloqueada && etapa.status === 'PENDENTE') ? 'BLOQUEADA' : etapa.status;
 
               return (
-                <div key={etapa.id} className="bg-surface-low p-6 border border-outline-variant/20 rounded-sm relative">
+                <div key={etapa.id} className="bg-surface-low p-6 border border-outline-variant/20 rounded-sm relative group">
                   <div className="flex justify-between items-start mb-4">
-                    <span className={`material-symbols-outlined text-3xl ${statusReal === 'CONCLUIDA' ? 'text-[#10b981]' : statusReal === 'BLOQUEADA' ? 'text-error opacity-40' : 'text-primary'}`}>
-                      {statusReal === 'CONCLUIDA' ? 'check_circle' : statusReal === 'BLOQUEADA' ? 'block' : 'build'}
-                    </span>
-                    <span className={`text-[8px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-sm ${statusReal === 'CONCLUIDA' ? 'bg-[#10b981]/10 text-[#10b981]' : statusReal === 'BLOQUEADA' ? 'bg-error/10 text-error' : 'bg-primary/10 text-primary'}`}>{statusReal}</span>
+                    <div className="flex items-center gap-3">
+                      <span className={`material-symbols-outlined text-3xl ${statusReal === 'CONCLUIDA' ? 'text-[#10b981]' : statusReal === 'BLOQUEADA' ? 'text-error opacity-40' : 'text-primary'}`}>
+                        {statusReal === 'CONCLUIDA' ? 'check_circle' : statusReal === 'BLOQUEADA' ? 'block' : 'build'}
+                      </span>
+                      <span className={`text-[8px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-sm ${statusReal === 'CONCLUIDA' ? 'bg-[#10b981]/10 text-[#10b981]' : statusReal === 'BLOQUEADA' ? 'bg-error/10 text-error' : 'bg-primary/10 text-primary'}`}>{statusReal}</span>
+                    </div>
+                    {/* BOTÃO DE EXCLUIR ETAPA */}
+                    <button onClick={() => { if(confirm('Excluir esta etapa?')) removerEtapa(aeronave.codigo, etapa.id); }} className="text-on-surfaceVariant hover:text-error opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                      <span className="material-symbols-outlined text-[18px]">delete</span>
+                    </button>
                   </div>
                   <h4 className="font-headline font-bold text-on-surface">{etapa.nome}</h4>
                   <p className="text-[10px] text-on-surfaceVariant mt-2 uppercase font-mono tracking-wider">Prazo: {etapa.prazo}</p>
                   
-                  <div className="mt-6 flex gap-2">
+                  <div className="mt-6">
                     {statusReal === 'BLOQUEADA' ? (
                       <p className="text-[9px] text-error font-bold uppercase tracking-widest">Aguardando etapa anterior</p>
                     ) : etapa.status === 'PENDENTE' ? (
@@ -133,10 +139,12 @@ export function AeronaveDetalhe() {
                 </thead>
                 <tbody className="divide-y divide-outline-variant/10 text-xs">
                   {pecasAlocadas.map(peca => (
-                    <tr key={peca.codigo} className="hover:bg-surface-highest/20">
+                    <tr key={peca.codigo} className="hover:bg-surface-highest/20 transition-colors group">
                       <td className="p-4"><p className="font-bold text-on-surface">{peca.nome}</p><p className="text-[10px] text-primary font-mono">{peca.codigo}</p></td>
                       <td className="p-4 text-center"><span className="text-[9px] bg-primary-container text-primary px-2 py-0.5 rounded-sm font-bold uppercase">{peca.status}</span></td>
-                      <td className="p-4 text-right"><button onClick={() => desvincularPeca(peca.codigo)} className="text-on-surfaceVariant hover:text-error"><span className="material-symbols-outlined text-lg">link_off</span></button></td>
+                      <td className="p-4 text-right">
+                        <button onClick={() => desvincularPeca(peca.codigo)} className="text-on-surfaceVariant hover:text-error opacity-40 group-hover:opacity-100" title="Desvincular do Ativo"><span className="material-symbols-outlined text-lg">link_off</span></button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -154,12 +162,12 @@ export function AeronaveDetalhe() {
               <table className="w-full text-left text-xs">
                 <thead className="bg-surface-container-highest/30">
                   <tr className="text-[10px] uppercase tracking-widest text-on-surfaceVariant font-bold">
-                    <th className="p-4">Teste</th><th className="p-4 text-center">Status</th><th className="p-4 text-right">Ação</th>
+                    <th className="p-4">Teste</th><th className="p-4 text-center">Status</th><th className="p-4 text-right">Ações</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-outline-variant/10 text-xs">
                   {aeronave.testes.map(teste => (
-                    <tr key={teste.id} className="hover:bg-surface-highest/20 transition-colors">
+                    <tr key={teste.id} className="hover:bg-surface-highest/20 transition-colors group">
                       <td className="p-4">
                         <p className="font-bold text-on-surface">{teste.nome}</p>
                         <div className="flex gap-2 mt-1">
@@ -174,6 +182,7 @@ export function AeronaveDetalhe() {
                         <div className="flex justify-end gap-2">
                           <button onClick={() => atualizarResultadoTeste(aeronave.codigo, teste.id, 'APROVADO')} className={`w-8 h-8 rounded-sm border ${teste.resultado === 'APROVADO' ? 'bg-[#10b981] border-[#10b981] text-background' : 'border-outline-variant/30 text-on-surfaceVariant hover:text-[#10b981]'}`}><span className="material-symbols-outlined text-sm">check</span></button>
                           <button onClick={() => atualizarResultadoTeste(aeronave.codigo, teste.id, 'REPROVADO')} className={`w-8 h-8 rounded-sm border ${teste.resultado === 'REPROVADO' ? 'bg-error border-error text-background' : 'border-outline-variant/30 text-on-surfaceVariant hover:text-error'}`}><span className="material-symbols-outlined text-sm">close</span></button>
+                          <button onClick={() => { if(confirm('Remover teste?')) removerTeste(aeronave.codigo, teste.id); }} className="w-8 h-8 rounded-sm border border-outline-variant/30 text-on-surfaceVariant hover:text-error hover:border-error opacity-40 group-hover:opacity-100 transition-colors"><span className="material-symbols-outlined text-sm">delete</span></button>
                         </div>
                       </td>
                     </tr>
@@ -185,14 +194,13 @@ export function AeronaveDetalhe() {
         </div>
       </main>
 
-      {/* Modais de Ação */}
       {isEtapaModalOpen && (
         <div className="fixed inset-0 bg-background/80 flex items-center justify-center z-50">
           <div className="bg-surface-low border border-outline-variant/30 p-8 rounded-sm w-full max-w-md shadow-2xl">
             <h3 className="font-headline font-bold text-xl mb-6 border-b border-outline-variant/20 pb-4">Nova Etapa</h3>
             <form onSubmit={handleCriarEtapa} className="space-y-4">
-              <input required value={novaEtapaNome} onChange={e => setNovaEtapaNome(e.target.value)} className="w-full bg-background border border-outline-variant/30 py-3 px-4 rounded-sm" placeholder="Nome da Etapa" />
-              <input required type="date" value={novaEtapaPrazo} onChange={e => setNovaEtapaPrazo(e.target.value)} className="w-full bg-background border border-outline-variant/30 py-3 px-4 rounded-sm" />
+              <input required value={novaEtapaNome} onChange={e => setNovaEtapaNome(e.target.value)} className="w-full bg-background border border-outline-variant/30 py-3 px-4 rounded-sm text-sm" placeholder="Nome da Etapa" />
+              <input required type="date" value={novaEtapaPrazo} onChange={e => setNovaEtapaPrazo(e.target.value)} className="w-full bg-background border border-outline-variant/30 py-3 px-4 rounded-sm text-sm" />
               <div className="flex gap-4 pt-4">
                 <button type="button" onClick={() => setIsEtapaModalOpen(false)} className="flex-1 py-3 border border-outline-variant/30 text-on-surfaceVariant font-bold uppercase text-[10px]">Cancelar</button>
                 <button type="submit" className="flex-1 py-3 bg-primary text-background font-bold uppercase text-[10px]">Adicionar</button>
@@ -207,11 +215,11 @@ export function AeronaveDetalhe() {
           <div className="bg-surface-low border border-outline-variant/30 p-8 rounded-sm w-full max-w-md shadow-2xl">
             <h3 className="font-headline font-bold text-xl mb-6 border-b border-outline-variant/20 pb-4">Agendar Teste</h3>
             <form onSubmit={handleCriarTeste} className="space-y-4">
-              <input required value={novoTesteNome} onChange={e => setNovoTesteNome(e.target.value)} className="w-full bg-background border border-outline-variant/30 py-3 px-4 rounded-sm" placeholder="Nome do Teste" />
+              <input required value={novoTesteNome} onChange={e => setNovoTesteNome(e.target.value)} className="w-full bg-background border border-outline-variant/30 py-3 px-4 rounded-sm text-sm" placeholder="Nome do Teste" />
               <select value={novoTesteTipo} onChange={e => setNovoTesteTipo(e.target.value as TipoTeste)} className="w-full bg-background border border-outline-variant/30 py-3 px-4 rounded-sm text-xs font-headline uppercase">
                 <option value="ELETRICO">ELÉTRICO</option><option value="HIDRAULICO">HIDRÁULICO</option><option value="AERODINAMICO">AERODINÂMICO</option>
               </select>
-              <input required type="date" value={novoTesteData} onChange={e => setNovoTesteData(e.target.value)} className="w-full bg-background border border-outline-variant/30 py-3 px-4 rounded-sm" />
+              <input required type="date" value={novoTesteData} onChange={e => setNovoTesteData(e.target.value)} className="w-full bg-background border border-outline-variant/30 py-3 px-4 rounded-sm text-sm" />
               <div className="flex gap-4 pt-4">
                 <button type="button" onClick={() => setIsTesteModalOpen(false)} className="flex-1 py-3 border border-outline-variant/30 text-on-surfaceVariant font-bold uppercase text-[10px]">Cancelar</button>
                 <button type="submit" className="flex-1 py-3 bg-primary text-background font-bold uppercase text-[10px]">Agendar Teste</button>
@@ -225,7 +233,7 @@ export function AeronaveDetalhe() {
         <div className="fixed inset-0 bg-background/80 flex items-center justify-center z-50">
           <div className="bg-surface-low border border-outline-variant/30 p-8 rounded-sm w-full max-w-md shadow-2xl">
             <h3 className="font-headline font-bold text-xl mb-6 border-b border-outline-variant/20 pb-4">Vincular Peça</h3>
-            <select value={pecaSelecionada} onChange={e => setPecaSelecionada(e.target.value)} className="w-full bg-background border border-outline-variant/30 py-3 px-4 rounded-sm mb-6">
+            <select value={pecaSelecionada} onChange={e => setPecaSelecionada(e.target.value)} className="w-full bg-background border border-outline-variant/30 py-3 px-4 rounded-sm mb-6 text-sm">
               <option value="" disabled>Selecione uma peça PRONTA...</option>
               {pecasDisponiveis.map(p => <option key={p.codigo} value={p.codigo}>{p.codigo} - {p.nome}</option>)}
             </select>

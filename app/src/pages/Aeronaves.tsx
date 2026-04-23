@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useSystem } from '../contexts/SystemContext';
 import { useNavigate } from 'react-router-dom';
-import type { TipoAeronave } from '../domain/types';
+import type { TipoAeronave, Aeronave } from '../domain/types';
 
 export function Aeronaves() {
   const navigate = useNavigate();
-  const { aeronaves, registrarAeronave, removerAeronave } = useSystem();
+  const { aeronaves, registrarAeronave, atualizarAeronave, removerAeronave } = useSystem();
+  
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   const [codigo, setCodigo] = useState('');
   const [modelo, setModelo] = useState('');
@@ -14,11 +16,32 @@ export function Aeronaves() {
   const [capacidade, setCapacidade] = useState('');
   const [alcance, setAlcance] = useState('');
 
-  const handleRegistrar = (e: React.FormEvent) => {
+  const handleAbrirNovo = () => {
+    setCodigo(''); setModelo(''); setCapacidade(''); setAlcance(''); setTipo('COMERCIAL');
+    setIsEditMode(false);
+    setIsDrawerOpen(true);
+  };
+
+  const handleAbrirEdicao = (aero: Aeronave) => {
+    setCodigo(aero.codigo);
+    setModelo(aero.modelo);
+    setTipo(aero.tipo);
+    setCapacidade(aero.capacidade.toString());
+    setAlcance(aero.alcance.toString());
+    setIsEditMode(true);
+    setIsDrawerOpen(true);
+  };
+
+  const handleSalvar = (e: React.FormEvent) => {
     e.preventDefault();
     if (!codigo || !modelo) return;
-    registrarAeronave({ codigo, modelo, tipo, capacidade: Number(capacidade) || 0, alcance: Number(alcance) || 0, pecas: [], etapas: [], testes: [] });
-    setCodigo(''); setModelo(''); setCapacidade(''); setAlcance('');
+    
+    if (isEditMode) {
+      atualizarAeronave(codigo, { modelo, tipo, capacidade: Number(capacidade) || 0, alcance: Number(alcance) || 0 });
+    } else {
+      registrarAeronave({ codigo, modelo, tipo, capacidade: Number(capacidade) || 0, alcance: Number(alcance) || 0, pecas: [], etapas: [], testes: [] });
+    }
+    
     setIsDrawerOpen(false);
   };
 
@@ -31,7 +54,7 @@ export function Aeronaves() {
       <main className="p-8">
         <div className="flex justify-between items-end mb-10">
           <h1 className="text-4xl font-headline font-bold text-on-surface tracking-tight uppercase">Aeronaves</h1>
-          <button onClick={() => setIsDrawerOpen(true)} className="bg-primary/10 text-primary border border-primary/30 px-6 py-2.5 rounded-sm font-bold text-xs tracking-widest hover:bg-primary hover:text-background transition-all flex items-center gap-2 font-headline uppercase">
+          <button onClick={handleAbrirNovo} className="bg-primary/10 text-primary border border-primary/30 px-6 py-2.5 rounded-sm font-bold text-xs tracking-widest hover:bg-primary hover:text-background transition-all flex items-center gap-2 font-headline uppercase">
             <span className="material-symbols-outlined text-lg">add</span> Nova Aeronave
           </button>
         </div>
@@ -55,7 +78,10 @@ export function Aeronaves() {
                       <button onClick={() => navigate(`/aeronaves/${aero.codigo}`)} className="text-on-surfaceVariant hover:text-primary transition-colors" title="Painel de Controlo">
                         <span className="material-symbols-outlined text-[20px]">visibility</span>
                       </button>
-                      <button onClick={() => { if(confirm(`Remover ${aero.codigo}?`)) removerAeronave(aero.codigo); }} className="text-on-surfaceVariant hover:text-error transition-colors" title="Excluir">
+                      <button onClick={() => handleAbrirEdicao(aero)} className="text-on-surfaceVariant hover:text-primary transition-colors" title="Editar">
+                        <span className="material-symbols-outlined text-[20px]">edit</span>
+                      </button>
+                      <button onClick={() => { if(confirm(`Remover permanentemente a aeronave ${aero.codigo}?`)) removerAeronave(aero.codigo); }} className="text-on-surfaceVariant hover:text-error transition-colors" title="Excluir">
                         <span className="material-symbols-outlined text-[20px]">delete</span>
                       </button>
                     </div>
@@ -71,11 +97,11 @@ export function Aeronaves() {
         <>
           <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[60]" onClick={() => setIsDrawerOpen(false)} />
           <div className="fixed top-0 right-0 h-full w-full max-w-md bg-surface-low border-l border-outline-variant/20 z-[70] p-8 flex flex-col">
-            <h2 className="text-2xl font-headline font-bold text-on-surface mb-6 uppercase">Registo do Vault</h2>
-            <form onSubmit={handleRegistrar} className="space-y-6 flex-1">
+            <h2 className="text-2xl font-headline font-bold text-on-surface mb-6 uppercase">{isEditMode ? 'Editar Aeronave' : 'Registo do Vault'}</h2>
+            <form onSubmit={handleSalvar} className="space-y-6 flex-1">
               <div className="space-y-2">
                 <label className="text-[10px] font-bold text-on-surfaceVariant uppercase tracking-widest font-label">Código do Ativo</label>
-                <input required value={codigo} onChange={e => setCodigo(e.target.value)} className="w-full bg-background border border-outline-variant/20 rounded-sm py-3 px-4 focus:border-primary text-primary font-headline uppercase" placeholder="EX: KV-001" />
+                <input required disabled={isEditMode} value={codigo} onChange={e => setCodigo(e.target.value)} className="w-full bg-background border border-outline-variant/20 rounded-sm py-3 px-4 focus:border-primary text-primary font-headline uppercase disabled:opacity-50" placeholder="EX: KV-001" />
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-bold text-on-surfaceVariant uppercase tracking-widest font-label">Modelo</label>
@@ -98,7 +124,10 @@ export function Aeronaves() {
                   <input required type="number" value={alcance} onChange={e => setAlcance(e.target.value)} className="w-full bg-background border border-outline-variant/20 rounded-sm py-3 px-4 text-on-surface" />
                 </div>
               </div>
-              <button type="submit" className="w-full py-3 bg-primary text-background uppercase text-[11px] font-bold font-headline mt-auto">Confirmar Registo</button>
+              <div className="flex gap-4 mt-auto">
+                <button type="button" onClick={() => setIsDrawerOpen(false)} className="flex-1 py-3 text-[11px] font-bold uppercase tracking-widest text-on-surfaceVariant hover:text-primary transition-colors border border-outline-variant/30 rounded-sm font-headline">Cancelar</button>
+                <button type="submit" className="flex-1 py-3 bg-primary text-background uppercase text-[11px] font-bold font-headline rounded-sm shadow-md">{isEditMode ? 'Salvar Edição' : 'Confirmar Registo'}</button>
+              </div>
             </form>
           </div>
         </>

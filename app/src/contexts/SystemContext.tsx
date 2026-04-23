@@ -24,6 +24,8 @@ interface SystemContextData {
   atualizarResultadoTeste: (codigoAeronave: string, idTeste: string, resultado: ResultadoTeste) => void;
   adicionarEtapa: (codigoAeronave: string, nome: string, prazo: string) => void;
   adicionarTeste: (codigoAeronave: string, nome: string, dataValidade: string, tipo: TipoTeste) => void;
+  removerEtapa: (codigoAeronave: string, idEtapa: string) => void; // NOVO
+  removerTeste: (codigoAeronave: string, idTeste: string) => void; // NOVO
   adicionarLog: (tag: string, color: string, text: string) => void;
 }
 
@@ -50,7 +52,10 @@ export function SystemProvider({ children }: { children: ReactNode }) {
   };
 
   const registrarAeronave = (a: Aeronave) => { setAeronaves(p => [a, ...p]); adicionarLog('FROTA', 'bg-primary-container text-primary', `Novo ativo ${a.codigo} registrado.`); };
-  const atualizarAeronave = (c: string, d: Partial<Aeronave>) => { setAeronaves(p => p.map(a => a.codigo === c ? { ...a, ...d } : a)); };
+  const atualizarAeronave = (c: string, d: Partial<Aeronave>) => { 
+    setAeronaves(p => p.map(a => a.codigo === c ? { ...a, ...d } : a)); 
+    adicionarLog('FROTA', 'bg-primary-container text-primary', `Dados da aeronave ${c} atualizados.`);
+  };
   const removerAeronave = (c: string) => { setAeronaves(p => p.filter(a => a.codigo !== c)); adicionarLog('ALERTA', 'bg-[#ef4444]/20 text-[#ef4444]', `Ativo ${c} removido permanentemente.`); };
   
   const registrarPeca = (p: PecaInventario) => { setInventario(pr => [p, ...pr]); adicionarLog('LOGÍSTICA', 'bg-[#1b2e36] text-[#b5cad4]', `Componente ${p.codigo} adicionado ao inventário.`); };
@@ -101,13 +106,30 @@ export function SystemProvider({ children }: { children: ReactNode }) {
     }));
   };
 
+  const removerEtapa = (codigoAeronave: string, idEtapa: string) => {
+    setAeronaves(prev => prev.map(aero => {
+      if (aero.codigo !== codigoAeronave) return aero;
+      return { ...aero, etapas: aero.etapas.filter(e => e.id !== idEtapa) };
+    }));
+    adicionarLog('PRODUÇÃO', 'bg-error-container text-error', `Etapa removida da aeronave ${codigoAeronave}.`);
+  };
+
+  const removerTeste = (codigoAeronave: string, idTeste: string) => {
+    setAeronaves(prev => prev.map(aero => {
+      if (aero.codigo !== codigoAeronave) return aero;
+      return { ...aero, testes: aero.testes.filter(t => t.id !== idTeste) };
+    }));
+    adicionarLog('QUALIDADE', 'bg-error-container text-error', `Teste cancelado na aeronave ${codigoAeronave}.`);
+  };
+
   useEffect(() => { adicionarLog('SIST', 'bg-surface-highest text-on-surface', 'Protocolo de segurança Kinetic Vault ativado.'); }, []);
 
   return (
     <SystemContext.Provider value={{ 
       aeronaves, logs, inventario, registrarAeronave, atualizarAeronave, removerAeronave,
       registrarPeca, atualizarPeca, removerPeca, vincularPeca, desvincularPeca,
-      atualizarStatusEtapa, atualizarResultadoTeste, adicionarEtapa, adicionarTeste, adicionarLog 
+      atualizarStatusEtapa, atualizarResultadoTeste, adicionarEtapa, adicionarTeste,
+      removerEtapa, removerTeste, adicionarLog 
     }}>
       {children}
     </SystemContext.Provider>
