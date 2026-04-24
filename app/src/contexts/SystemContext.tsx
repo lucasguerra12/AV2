@@ -65,7 +65,12 @@ export function SystemProvider({ children }: { children: ReactNode }) {
   };
   
   const atualizarAeronave = (c: string, d: Partial<Aeronave>) => { setAeronaves(p => p.map(a => a.codigo === c ? { ...a, ...d } : a)); };
-  const removerAeronave = (c: string) => { setAeronaves(p => p.filter(a => a.codigo !== c)); adicionarLog('ALERTA', 'bg-[#ef4444]/20 text-[#ef4444]', `Ativo ${c} removido.`); };
+  const removerAeronave = (c: string) => { 
+    setAeronaves(p => p.filter(a => a.codigo !== c)); 
+    setInventario(prev => prev.map(p => p.aeronaveDestino === c ? { ...p, aeronaveDestino: null } : p));
+    adicionarLog('ALERTA', 'bg-[#ef4444]/20 text-[#ef4444]', `Ativo ${c} removido e peças devolvidas ao estoque.`); 
+  };
+  
   const registrarPeca = (p: PecaInventario) => { setInventario(pr => [p, ...pr]); adicionarLog('LOGÍSTICA', 'bg-[#1b2e36] text-[#b5cad4]', `Componente ${p.codigo} adicionado.`); };
   const atualizarPeca = (c: string, d: Partial<PecaInventario>) => { setInventario(p => p.map(i => i.codigo === c ? { ...i, ...d } : i)); };
   const removerPeca = (c: string) => { setInventario(p => p.filter(i => i.codigo !== c)); };
