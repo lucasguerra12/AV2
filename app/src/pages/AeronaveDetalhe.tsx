@@ -29,9 +29,11 @@ export function AeronaveDetalhe() {
 
   const pecasAlocadas = inventario.filter(p => p.aeronaveDestino === id);
   const pecasDisponiveis = inventario.filter(p => !p.aeronaveDestino && p.status === 'PRONTA');
-  
   const etapasTotal = aeronave.etapas.length;
   const integridade = etapasTotal === 0 ? 0 : Math.round((aeronave.etapas.filter(e => e.status === 'CONCLUIDA').length / etapasTotal) * 100);
+  const possuiTestes = aeronave.testes.length > 0;
+  const todosTestesAprovados = possuiTestes && aeronave.testes.every(t => t.resultado === 'APROVADO');
+  const aeronaveProntaParaEntrega = integridade === 100 && todosTestesAprovados;
 
   const handleCriarEtapa = (e: React.FormEvent) => { e.preventDefault(); if (novaEtapaNome) { adicionarEtapa(aeronave.codigo, novaEtapaNome, novaEtapaPrazo); setNovaEtapaNome(''); setNovaEtapaPrazo(''); setIsEtapaModalOpen(false); } };
   const handleCriarTeste = (e: React.FormEvent) => { e.preventDefault(); if (novoTesteNome && novoTesteData) { adicionarTeste(aeronave.codigo, novoTesteNome, novoTesteData, novoTesteTipo); setNovoTesteNome(''); setNovoTesteData(''); setIsTesteModalOpen(false); } };
@@ -46,7 +48,7 @@ export function AeronaveDetalhe() {
         </button>
         <div className="flex items-center gap-4">
           <span className="text-lg font-black text-primary font-headline uppercase tracking-widest">AIRCRAFT_CONTROL_{aeronave.codigo}</span>
-          {integridade === 100 && (
+                    {aeronaveProntaParaEntrega && (
             <button onClick={() => navigate(`/aeronaves/${aeronave.codigo}/relatorio`)} className="ml-4 bg-[#10b981]/20 text-[#10b981] border border-[#10b981]/50 px-4 py-1.5 rounded-sm text-[10px] font-bold uppercase hover:bg-[#10b981] hover:text-background transition-all shadow-[0_0_15px_rgba(16,185,129,0.2)]">
               Gerar Relatório Final
             </button>
@@ -63,7 +65,15 @@ export function AeronaveDetalhe() {
           <div className="mt-4 h-1 w-full bg-surface-highest rounded-full overflow-hidden">
             <div className="h-full bg-primary transition-all duration-1000" style={{ width: `${integridade}%` }}></div>
           </div>
+          
+          {!todosTestesAprovados && integridade === 100 && (
+            <p className="text-[10px] text-error uppercase font-bold tracking-widest mt-4 flex items-center gap-1">
+              <span className="material-symbols-outlined text-[14px]">warning</span> Entrega bloqueada. Pendente aprovação na Qualidade (Testes).
+            </p>
+          )}
         </section>
+
+        {/* ETAPAS */}
         <section>
           <div className="flex justify-between items-center mb-6 border-b border-outline-variant/20 pb-2">
             <h3 className="text-xl font-bold font-headline uppercase tracking-tighter">Linha de Produção</h3>
@@ -159,6 +169,7 @@ export function AeronaveDetalhe() {
         </div>
       </main>
 
+      {/* Modais de Ação */}
       {isEtapaModalOpen && (<div className="fixed inset-0 bg-background/80 flex items-center justify-center z-50"><div className="bg-surface-low border border-outline-variant/30 p-8 rounded-sm w-full max-w-md"><h3 className="font-headline font-bold text-xl mb-6">Nova Etapa</h3><form onSubmit={handleCriarEtapa} className="space-y-4"><input required value={novaEtapaNome} onChange={e => setNovaEtapaNome(e.target.value)} className="w-full bg-background border border-outline-variant/30 py-3 px-4 rounded-sm text-sm" placeholder="Nome" /><input required type="date" value={novaEtapaPrazo} onChange={e => setNovaEtapaPrazo(e.target.value)} className="w-full bg-background border border-outline-variant/30 py-3 px-4 rounded-sm text-sm" /><div className="flex gap-4 pt-4"><button type="button" onClick={() => setIsEtapaModalOpen(false)} className="flex-1 py-3 border border-outline-variant/30 text-on-surfaceVariant font-bold uppercase text-[10px]">Cancelar</button><button type="submit" className="flex-1 py-3 bg-primary text-background font-bold uppercase text-[10px]">Adicionar</button></div></form></div></div>)}
       {isTesteModalOpen && (<div className="fixed inset-0 bg-background/80 flex items-center justify-center z-50"><div className="bg-surface-low border border-outline-variant/30 p-8 rounded-sm w-full max-w-md"><h3 className="font-headline font-bold text-xl mb-6">Agendar Teste</h3><form onSubmit={handleCriarTeste} className="space-y-4"><input required value={novoTesteNome} onChange={e => setNovoTesteNome(e.target.value)} className="w-full bg-background border border-outline-variant/30 py-3 px-4 rounded-sm text-sm" placeholder="Nome" /><select value={novoTesteTipo} onChange={e => setNovoTesteTipo(e.target.value as TipoTeste)} className="w-full bg-background border border-outline-variant/30 py-3 px-4 rounded-sm text-xs font-headline uppercase"><option value="ELETRICO">ELÉTRICO</option><option value="HIDRAULICO">HIDRÁULICO</option><option value="AERODINAMICO">AERODINÂMICO</option></select><input required type="date" value={novoTesteData} onChange={e => setNovoTesteData(e.target.value)} className="w-full bg-background border border-outline-variant/30 py-3 px-4 rounded-sm text-sm" /><div className="flex gap-4 pt-4"><button type="button" onClick={() => setIsTesteModalOpen(false)} className="flex-1 py-3 border border-outline-variant/30 text-on-surfaceVariant font-bold uppercase text-[10px]">Cancelar</button><button type="submit" className="flex-1 py-3 bg-primary text-background font-bold uppercase text-[10px]">Agendar Teste</button></div></form></div></div>)}
       {isVincularModalOpen && (<div className="fixed inset-0 bg-background/80 flex items-center justify-center z-50"><div className="bg-surface-low border border-outline-variant/30 p-8 rounded-sm w-full max-w-md"><h3 className="font-headline font-bold text-xl mb-6">Vincular Peça</h3><select value={pecaSelecionada} onChange={e => setPecaSelecionada(e.target.value)} className="w-full bg-background border border-outline-variant/30 py-3 px-4 rounded-sm mb-6 text-sm"><option value="" disabled>Selecione uma peça...</option>{pecasDisponiveis.map(p => <option key={p.codigo} value={p.codigo}>{p.codigo} - {p.nome}</option>)}</select><div className="flex gap-4"><button onClick={() => setIsVincularModalOpen(false)} className="flex-1 py-3 border border-outline-variant/30 text-on-surfaceVariant font-bold uppercase text-[10px]">Cancelar</button><button onClick={handleVincular} disabled={!pecaSelecionada} className="flex-1 py-3 bg-primary text-background font-bold uppercase text-[10px]">Confirmar</button></div></div></div>)}
