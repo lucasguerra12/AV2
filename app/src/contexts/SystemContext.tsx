@@ -1,9 +1,9 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import type { Aeronave, StatusEtapa, ResultadoTeste, TipoTeste, StatusPeca, Funcionario } from '../domain/types';
+import type { Aeronave, StatusEtapa, ResultadoTeste, TipoTeste, StatusPeca, Funcionario, TipoPeca } from '../domain/types';
 import { mockAeronaves, mockFuncionarios } from '../infrastructure/mocks';
 
 export interface SystemLog { id: number; time: string; tag: string; color: string; text: string; }
-export interface PecaInventario { codigo: string; nome: string; categoria: string; fornecedor: string; status: StatusPeca; aeronaveDestino?: string | null; }
+export interface PecaInventario { codigo: string; nome: string; tipo: TipoPeca; fornecedor: string; status: StatusPeca; aeronaveDestino?: string | null; }
 
 interface SystemContextData {
   aeronaves: Aeronave[]; logs: SystemLog[]; inventario: PecaInventario[]; equipe: Funcionario[];
@@ -14,7 +14,7 @@ interface SystemContextData {
   registrarPeca: (novaPeca: PecaInventario) => void; atualizarPeca: (codigo: string, dados: Partial<PecaInventario>) => void; removerPeca: (codigo: string) => void;
   vincularPeca: (codigoPeca: string, codigoAeronave: string) => void; desvincularPeca: (codigoPeca: string) => void;
   atualizarStatusEtapa: (codigoAeronave: string, idEtapa: string, novoStatus: StatusEtapa) => void; 
-  alocarFuncionario: (codigoAeronave: string, idEtapa: string, idFuncionario: string) => void; // NOVO
+  alocarFuncionario: (codigoAeronave: string, idEtapa: string, idFuncionario: string) => void;
   atualizarResultadoTeste: (codigoAeronave: string, idTeste: string, resultado: ResultadoTeste) => void;
   adicionarEtapa: (codigoAeronave: string, nome: string, prazo: string) => void; adicionarTeste: (codigoAeronave: string, nome: string, dataValidade: string, tipo: TipoTeste) => void;
   removerEtapa: (codigoAeronave: string, idEtapa: string) => void; removerTeste: (codigoAeronave: string, idTeste: string) => void; adicionarLog: (tag: string, color: string, text: string) => void;
@@ -23,7 +23,7 @@ interface SystemContextData {
 const SystemContext = createContext<SystemContextData>({} as SystemContextData);
 
 const mockInventario: PecaInventario[] = [
-  { codigo: 'PRP-902', nome: 'Motor GE9X', categoria: 'PROPULSÃO', fornecedor: 'GE Aviation', status: 'PRONTA', aeronaveDestino: 'KV-001' }
+  { codigo: 'PRP-902', nome: 'Motor GE9X', tipo: 'IMPORTADA', fornecedor: 'GE Aviation', status: 'PRONTA', aeronaveDestino: 'KV-001' }
 ];
 
 export function SystemProvider({ children }: { children: ReactNode }) {
@@ -31,10 +31,8 @@ export function SystemProvider({ children }: { children: ReactNode }) {
   const [logs, setLogs] = useState<SystemLog[]>(() => { const saved = localStorage.getItem('ac_logs'); return saved ? JSON.parse(saved) : []; });
   const [inventario, setInventario] = useState<PecaInventario[]>(() => { const saved = localStorage.getItem('ac_inventario'); return saved ? JSON.parse(saved) : mockInventario; });
   const [equipe, setEquipe] = useState<Funcionario[]>(() => { const saved = localStorage.getItem('ac_equipe'); return saved ? JSON.parse(saved) : mockFuncionarios; });
-  
   const [usuarioLogado, setUsuarioLogado] = useState<Funcionario | null>(() => { const saved = localStorage.getItem('ac_usuario'); return saved ? JSON.parse(saved) : null; });
 
-  // PERSISTÊNCIA: Salva no LocalStorage sempre que houver alteração
   useEffect(() => {
     localStorage.setItem('ac_aeronaves', JSON.stringify(aeronaves));
     localStorage.setItem('ac_inventario', JSON.stringify(inventario));
@@ -44,7 +42,6 @@ export function SystemProvider({ children }: { children: ReactNode }) {
   }, [aeronaves, inventario, equipe, logs, usuarioLogado]);
 
   const getTime = () => { const now = new Date(); return `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`; };
-
   const adicionarLog = (tag: string, color: string, text: string) => { setLogs(prev => [{ id: Date.now(), time: getTime(), tag, color, text }, ...prev].slice(0, 15)); };
 
   const login = (usuario: string, senha: string) => {
@@ -55,12 +52,20 @@ export function SystemProvider({ children }: { children: ReactNode }) {
 
   const logout = () => { if (usuarioLogado) adicionarLog('ACESSO', 'bg-outline-variant/30 text-on-surfaceVariant', `Usuário ${usuarioLogado.usuario} encerrou a sessão.`); setUsuarioLogado(null); };
 
-  const adicionarMembroEquipe = (membro: Omit<Funcionario, 'id'>) => { setEquipe(prev => [...prev, { ...membro, id: `f-${Date.now()}` }]); adicionarLog('SEGURANÇA', 'bg-secondary/20 text-secondary', `Credencial gerada para ${membro.nome}.`); };
-  const removerMembroEquipe = (id: string) => { setEquipe(prev => prev.filter(f => f.id !== id)); adicionarLog('ALERTA', 'bg-[#ef4444]/20 text-[#ef4444]', `Credencial de acesso revogada.`); };
+  const adicionarMembroEquipe = (membro: Omit<Funcionario, 'id'>) => { 
+    if (equipe.some(f => f.usuario === membro.usuario)) { alert(`O usuário @${membro.usuario} já existe.`); return; }
+    setEquipe(prev => [...prev, { ...membro, id: `f-${Date.now()}` }]); adicionarLog('SEGURANÇA', 'bg-secondary/20 text-secondary', `Credencial gerada para ${membro.nome}.`); 
+  };
+  
+  const removerMembroEquipe = (id: string) => { setEquipe(prev => prev.filter(f => f.id !== id)); adicionarLog('ALERTA', 'bg-[#ef4444]/20 text-[#ef4444]', `Credencial revogada.`); };
 
-  const registrarAeronave = (a: Aeronave) => { setAeronaves(p => [a, ...p]); adicionarLog('FROTA', 'bg-primary-container text-primary', `Ativo ${a.codigo} registrado.`); };
+  const registrarAeronave = (a: Aeronave) => { 
+    if (aeronaves.some(aero => aero.codigo === a.codigo)) { alert(`Aeronave ${a.codigo} já registada.`); return; }
+    setAeronaves(p => [a, ...p]); adicionarLog('FROTA', 'bg-primary-container text-primary', `Ativo ${a.codigo} registado.`); 
+  };
+  
   const atualizarAeronave = (c: string, d: Partial<Aeronave>) => { setAeronaves(p => p.map(a => a.codigo === c ? { ...a, ...d } : a)); };
-  const removerAeronave = (c: string) => { setAeronaves(p => p.filter(a => a.codigo !== c)); adicionarLog('ALERTA', 'bg-[#ef4444]/20 text-[#ef4444]', `Ativo ${c} removido permanentemente.`); };
+  const removerAeronave = (c: string) => { setAeronaves(p => p.filter(a => a.codigo !== c)); adicionarLog('ALERTA', 'bg-[#ef4444]/20 text-[#ef4444]', `Ativo ${c} removido.`); };
   const registrarPeca = (p: PecaInventario) => { setInventario(pr => [p, ...pr]); adicionarLog('LOGÍSTICA', 'bg-[#1b2e36] text-[#b5cad4]', `Componente ${p.codigo} adicionado.`); };
   const atualizarPeca = (c: string, d: Partial<PecaInventario>) => { setInventario(p => p.map(i => i.codigo === c ? { ...i, ...d } : i)); };
   const removerPeca = (c: string) => { setInventario(p => p.filter(i => i.codigo !== c)); };
@@ -79,17 +84,15 @@ export function SystemProvider({ children }: { children: ReactNode }) {
     setAeronaves(prev => prev.map(aero => {
       if (aero.codigo !== codigoAeronave) return aero;
       return {
-        ...aero,
-        etapas: aero.etapas.map(e => {
+        ...aero, etapas: aero.etapas.map(e => {
           if (e.id === idEtapa) {
-            if (e.funcionariosAlocados.some(f => f.id === idFuncionario)) return e; // Evita duplicidade
+            if (e.funcionariosAlocados.some(f => f.id === idFuncionario)) return e;
             return { ...e, funcionariosAlocados: [...e.funcionariosAlocados, funcionario] };
           }
           return e;
         })
       };
     }));
-    adicionarLog('PRODUÇÃO', 'bg-primary/20 text-primary', `Colaborador alocado na etapa do ativo ${codigoAeronave}.`);
   };
 
   useEffect(() => { adicionarLog('SIST', 'bg-surface-highest text-on-surface', 'Sistema Kinetic Vault iniciado.'); }, []);
