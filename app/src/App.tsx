@@ -22,6 +22,7 @@ function ProtectedRoutes() {
 }
 
 function App() {
+  console.log("%c✈️ Aerocode SPA - Desenvolvido por Lucas Fernando Guerra - AV2", "color: #3b82f6; font-size: 16px; font-weight: bold;");
   return (
     <SystemProvider>
       <BrowserRouter>
